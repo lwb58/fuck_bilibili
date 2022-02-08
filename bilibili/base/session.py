@@ -63,13 +63,15 @@ class Session(requests.Session):
 
     def request(self, *args, **kw):
         kw.update(self.request_kw)
-        res = super().request(*args, **kw)
-        self.last_response = res
-        print("\n", "---" * 20)
-        print(args, res)
+        print("\n", "===" * 20)
+        print(args)
+        print("---" * 20)
         for k, v in kw.items():
             if k == "data" and kw["data"] and len(kw["data"]) > 10:
-                print(k, f'{kw["data"][:10]}...')
+                print(k, ": ", f'{kw["data"][:10]}...')
             else:
-                print(k, v)
+                print(k, ": ", v)
+        res = super().request(*args, **kw)
+        self.last_response = res
+        print(res)
         return res
