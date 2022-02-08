@@ -6,8 +6,9 @@ from requests.adapters import HTTPAdapter
 
 
 class Session(requests.Session):
-    def __init__(self, tries=None, headers=None, cookies=None):
+    def __init__(self, tries=None, headers=None, cookies=None, **request_kw):
         super().__init__()
+        self.request_kw = request_kw
         self.last_response = None
         self.mount_http_adapter(tries)
         self.update_headers(headers)
@@ -61,6 +62,7 @@ class Session(requests.Session):
             self.cookies.set(k.strip(), v.strip())
 
     def request(self, *args, **kw):
+        kw.update(self.request_kw)
         res = super().request(*args, **kw)
         self.last_response = res
         print("\n", "---" * 20)

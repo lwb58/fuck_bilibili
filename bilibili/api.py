@@ -65,10 +65,10 @@ def upload_cover(session, file):
     return file_id
 
 
-def submit_video(cookies, submit_info):
+def submit_video(cookies, submit_info, **request_kw):
     '''视频投稿'''
     info = copy.deepcopy(submit_info)
-    with Session(cookies=cookies, tries=5) as session:
+    with Session(cookies=cookies, tries=5, **request_kw) as session:
         for video in info["videos"]:
             video["filename"] = upload_video(session, video["filename"])
         try:
