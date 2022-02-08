@@ -1,8 +1,8 @@
 import os
 import copy
 import base64
-from base.session import Session
-from base import api
+from bilibili.base.session import Session
+from bilibili.base import api
 import requests
 
 

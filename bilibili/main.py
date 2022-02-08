@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-from api import submit_video
+from bilibili.api import submit_video
 
 def main():
     info = {
