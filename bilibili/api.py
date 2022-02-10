@@ -1,6 +1,7 @@
 import os
 import copy
 import base64
+import uuid
 from bilibili.base.session import Session
 from bilibili.base import api
 import requests
@@ -21,10 +22,28 @@ class LocalVideo:
                 chunk = f.read(chunk_size)
 
 
+class HttpVideo:
+    def __init__(self, url):
+        self.url = url
+        self.name = str(uuid.uuid4())
+        with Session(tries=3) as session:
+            res = session.get(self.url, stream=True, timeout=20)
+        self.size = int(res.headers["content-length"])
+        self.filetype = res.headers["content-type"].split("/")[-1]
+        if self.filetype in ["html", "htm", "text"]:
+            raise Exception(
+                f"invalid media file type, can not {self.filetype}")
+
+    def iter_content(self, chunk_size):
+        with Session(tries=3) as session:
+            return session.get(self.url, timeout=20,
+                               stream=True).iter_content(chunk_size)
+
+
 def upload_video(session, file):
     if file.startswith("http"):
         # todo 网络视频直接上传
-        video = None
+        video = HttpVideo(file)
     elif os.path.exists(file) and os.path.isfile(file):
         video = LocalVideo(file)
     else:
@@ -76,4 +95,9 @@ def submit_video(cookies, submit_info, **request_kw):
         except:
             info["cover"] = ""
         res = api.upload_video_submit(session, info)
-    print(res)
+    return res
+
+
+def search_user(user, **request_kw):
+    with Session(tries=5, **request_kw) as session:
+        return api.search_users(session, user)

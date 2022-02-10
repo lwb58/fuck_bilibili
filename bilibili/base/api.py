@@ -10,13 +10,13 @@ BILIBILI_UPLOAD_COVER_URL = "https://member.bilibili.com/x/vu/web/cover/up"
 BILIBILI_UPLOAD_SUBMIT_URL = "https://member.bilibili.com/x/vu/web/add"
 
 
-def search_users(session, author):
+def search_users(session, user):
     '''查找用户'''
     res = session.get(url=BILIBILI_SEARCH_URL,
                       params={
                           "search_type": "bili_user",
                           "page": 1,
-                          "keyword": author,
+                          "keyword": user,
                           "highlight": 1,
                           "single_column": 0,
                       },
